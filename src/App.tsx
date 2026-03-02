@@ -1,12 +1,9 @@
-import React from 'react';
-import Dashboard from './components/Dashboard';
+/**
+ * App.tsx – Shell da Aplicação Full HD
+ */
+import React from "react";
+import Dashboard from "./components/Dashboard";
 
-function App() {
-  return (
-    <div className="min-h-screen bg-slate-900 text-slate-50 font-sans">
-      <Dashboard />
-    </div>
-  );
-}
+const App: React.FC = () => <Dashboard />;
 
 export default App;

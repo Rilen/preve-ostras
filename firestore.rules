@@ -1,0 +1,19 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Leitura e escrita pública: dados abertos do governo federal.
+    // A sincronização ocorre diretamente do browser (sem Cloud Functions).
+    match /ibge_populacao/{doc} {
+      allow read: if true;
+      allow write: if true;
+    }
+    match /clima_historico/{doc} {
+      allow read: if true;
+      allow write: if true;
+    }
+    // Demais coleções: negado por padrão
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
