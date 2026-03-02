@@ -178,12 +178,43 @@ const getSimulatedTide = (): TideData => {
 };
 
 export const getWeeklyImpactAnalysis = async (): Promise<ResilienceAnalysis | null> => {
-    const [weather, demographic] = await Promise.all([
+    let [weather, demographic] = await Promise.all([
         getWeatherData(),
         getDemographicData(),
     ]);
 
+    // ── Fallback automático: Firestore vazio → busca direto da Open-Meteo ───────
+    // Isso acontece na primeira abertura do app, antes de qualquer sincronização.
+    if (weather.length < 7) {
+        console.info("[Analysis] Firestore vazio — buscando Open-Meteo em modo leitura direta...");
+        try {
+            const params = new URLSearchParams({
+                latitude: String(RIO_DAS_OSTRAS_LAT),
+                longitude: String(RIO_DAS_OSTRAS_LON),
+                past_days: "30",
+                daily: "temperature_2m_max,precipitation_sum,wind_speed_10m_max",
+                timezone: "America/Sao_Paulo",
+            });
+            const res = await fetch(`${OPEN_METEO_URL}?${params}`);
+            if (res.ok) {
+                const json = await res.json();
+                const { time, temperature_2m_max: temps, precipitation_sum: preci, wind_speed_10m_max: winds } = json.daily ?? {};
+                if (time?.length) {
+                    weather = (time as string[]).map((data: string, i: number) => ({
+                        data,
+                        temp_max: temps[i] ?? 0,
+                        precipitacao: preci[i] ?? 0,
+                        vento_max: winds[i] ?? 0,
+                    }));
+                }
+            }
+        } catch (e) {
+            console.warn("[Analysis] Fallback Open-Meteo falhou:", e);
+        }
+    }
+
     if (weather.length < 7) return null;
+
 
     const last7 = weather.slice(-7);
     const maxPrecip = Math.max(...last7.map((d) => d.precipitacao));
