@@ -48,7 +48,8 @@
   body {
     font-family: var(--font-sans);
     background-color: var(--bg-base);
-    color: #f1f5f9;
+    color: #e2e8f0;
+    /* slate-200 — contraste seguro em fundos escuros */
     min-height: 100vh;
     overflow-x: hidden;
 
@@ -74,16 +75,16 @@
 }
 
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(148, 163, 184, 0.15);
+  background: rgba(148, 163, 184, 0.25);
   border-radius: 99px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(148, 163, 184, 0.3);
+  background: rgba(148, 163, 184, 0.45);
 }
 
 /* ─── Layout Full HD ───────────────────────────────────────────────────────── */
@@ -202,7 +203,7 @@
   font-weight: 700;
   letter-spacing: 0.22em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.5);
+  color: rgba(148, 163, 184, 0.72);
 }
 
 .label-tactical-hi {
@@ -211,6 +212,7 @@
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  color: rgba(203, 213, 225, 0.9);
 }
 
 /* Divisor com gradiente */

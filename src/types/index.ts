@@ -81,3 +81,58 @@ export interface InfraestruturaStatus {
     estabilidadeEletrica: number; // 0–100
     cargaDrenagem: number;        // 0–100
 }
+
+// ─── Histórico Anual ────────────────────────────────────────────────────────
+
+export type ClassificacaoAnual = 'seco' | 'normal' | 'umido' | 'muito_umido';
+
+export interface AnnualSummary {
+    ano: number;
+    precipitacaoTotal: number;  // mm acumulado no ano
+    diasComChuva: number;       // dias com precipitação > 1 mm
+    picoDiario: number;         // mm no dia de maior precipitação
+    picoDiarioData: string;     // data do pico (ISO)
+    ventoPico: number;          // km/h maior rajada do ano
+    tempMaxMedia: number;       // °C média das máximas
+    anomaliaPct: number;        // % vs média histórica do conjunto
+    classificacao: ClassificacaoAnual;
+}
+
+// ─── Eventos de Desastre ────────────────────────────────────────────────────
+
+export type TipoDesastre =
+    | 'enchente'
+    | 'alagamento'
+    | 'deslizamento'
+    | 'ventania'
+    | 'granizo'
+    | 'emergencia_civil';
+
+export type NivelDesastre = 'ocorrencia' | 'atencao' | 'alerta' | 'emergencia';
+
+export interface DisasterEvent {
+    id: string;
+    data: string;                  // ISO date: "YYYY-MM-DD"
+    tipo: TipoDesastre;
+    nivel: NivelDesastre;
+    titulo: string;
+    descricao: string;
+    bairrosAfetados: string[];
+    precipitacaoMm?: number;       // mm registrado no evento
+    ventoKmh?: number;             // rajada máxima registrada
+    fonte: string;
+}
+
+// ─── Anomalia Pluviométrica ─────────────────────────────────────────────────
+
+export type TendenciaAnomalia = 'normal' | 'acima' | 'critico';
+
+export interface PluvioAnomaly {
+    mes: number;                   // 1–12
+    ano: number;
+    mediaHistorica: number;        // mm — média do mesmo mês em anos anteriores
+    acumuladoAtual: number;        // mm — acumulado até hoje neste mês
+    anomaliaPct: number;           // % acima/abaixo da média
+    tendencia: TendenciaAnomalia;
+    diasRestantes: number;         // dias que faltam para fechar o mês
+}

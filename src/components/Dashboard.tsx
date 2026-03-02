@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect, useCallback } from "react";
-import ResilienceMap from "./ResilienceMap";
+import CentralPanel from "./CentralPanel";
 import SidebarLeft from "./SidebarLeft";
 import SidebarRight from "./SidebarRight";
 import { syncSidraData, syncWeatherData, getWeeklyImpactAnalysis } from "../services/dataService";
@@ -155,9 +155,9 @@ const Dashboard: React.FC = () => {
                 {/* Coluna Esquerda */}
                 <SidebarLeft analysis={analysis} loading={loadingAnalysis} />
 
-                {/* Mapa Central */}
+                {/* Mapa Central com Abas */}
                 <div className="map-area">
-                    <ResilienceMap key={lastSyncKey} analysis={analysis} loading={loadingAnalysis} />
+                    <CentralPanel analysis={analysis} loading={loadingAnalysis} key={lastSyncKey} />
                 </div>
 
                 {/* Coluna Direita */}
