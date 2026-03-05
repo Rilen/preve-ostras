@@ -71,20 +71,16 @@ const Dashboard: React.FC = () => {
                         </div>
                         <span className="pulse-dot pulse-dot-blue absolute -top-0.5 -right-0.5 w-2 h-2" />
                     </div>
-                    <div>
-                        <div className="font-black text-slate-100 text-base tracking-tight leading-none">PREVE-OSTRAS</div>
-                        <div className="label-tactical mt-0.5">Sistema de Inteligência Territorial</div>
+                    <div className="min-w-0">
+                        <div className="font-black text-slate-100 text-base tracking-tight leading-none whitespace-nowrap">PREVE-OSTRAS</div>
+                        <div className="label-tactical mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">Sistema de Inteligência Territorial</div>
                     </div>
                 </div>
 
-                <div className="w-px h-8 bg-white/10 mx-1" />
-
-                {/* Breadcrumb tático */}
-                <div className="flex items-center gap-2 text-xs font-mono text-slate-500">
-                    <span>RDO</span>
-                    <span className="text-white/20">/</span>
+                <div className="w-px h-8 bg-white/10 mx-1 hidden md:block" />
+                <div className="hidden lg:flex items-center gap-2 text-[10px] font-mono text-slate-500 uppercase tracking-tighter">
                     <span className="text-blue-400">RESILIÊNCIA</span>
-                    <span className="text-white/20">/</span>
+                    <span className="text-white/10">»</span>
                     <span>MAPA ATIVO</span>
                 </div>
 
@@ -92,28 +88,22 @@ const Dashboard: React.FC = () => {
                 <div className="flex-1" />
 
                 {/* Status do sistema */}
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-4">
                     {/* Estado da análise */}
-                    {loadingAnalysis ? (
-                        <div className="flex items-center gap-2">
-                            <div className="spinner w-3 h-3" />
-                            <span className="label-tactical">Calculando...</span>
-                        </div>
-                    ) : analysis ? (
-                        <div className="flex items-center gap-2">
-                            <span className={`badge ${analysis.indiceRisco > 60 ? "badge-rose" : "badge-green"}`}>
+                    {!loadingAnalysis && analysis ? (
+                        <div className="flex items-center">
+                            <span className={`badge ${analysis.indiceRisco > 60 ? "badge-rose" : "badge-green"} text-[9px] whitespace-nowrap`}>
                                 <span className={`pulse-dot ${analysis.indiceRisco > 60 ? "pulse-dot-rose" : "pulse-dot-green"} w-1.5 h-1.5`} />
-                                {analysis.indiceRisco > 60 ? "ALERTA ATIVO" : "OPERAÇÃO NORMAL"}
+                                <span className="hidden sm:inline">{analysis.indiceRisco > 60 ? "ALERTA" : "OPERANDO"}</span>
+                                <span className="sm:inline ml-1">{analysis.indiceRisco.toFixed(0)}%</span>
                             </span>
                         </div>
-                    ) : (
-                        <span className="badge badge-amber">SEM DADOS</span>
-                    )}
+                    ) : null}
 
                     {/* Relógio */}
-                    <div className="text-right hidden xl:block">
-                        <div className="font-mono text-sm font-bold text-slate-200 tracking-widest">{timeStr}</div>
-                        <div className="label-tactical capitalize">{dateStr}</div>
+                    <div className="text-right hidden sm:block">
+                        <div className="font-mono text-xs font-bold text-slate-300 tracking-wider leading-none">{timeStr}</div>
+                        <div className="label-tactical text-[8px] mt-0.5">{dateStr}</div>
                     </div>
 
                     {/* Botão sync */}
@@ -121,30 +111,33 @@ const Dashboard: React.FC = () => {
                         id="btn-sync"
                         onClick={handleSync}
                         disabled={syncState === "syncing"}
-                        className="btn-primary"
+                        className="btn-primary px-3 py-1.5 h-8"
                     >
                         {syncState === "syncing" ? (
-                            <><div className="spinner w-3.5 h-3.5" /> Sincronizando...</>
-                        ) : syncState === "success" ? (
-                            <><span>✓</span> Atualizado</>
-                        ) : syncState === "error" ? (
-                            <><span>✕</span> Erro</>
+                            <div className="spinner w-3 h-3" />
                         ) : (
-                            <><span>⚡</span> Sincronizar Dados</>
+                            <span className="text-base">⚡</span>
                         )}
+                        <span className="hidden md:inline ml-1">
+                            {syncState === "syncing" ? "Sincronizando" : "Sincronizar"}
+                        </span>
                     </button>
                 </div>
 
                 {/* Feedback de sync */}
                 {syncMsg && syncState !== "idle" && (
                     <div className={`
-            absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-full
-            px-4 py-1.5 rounded-b-lg text-xs font-mono font-medium
-            ${syncState === "success" ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/20" :
-                            syncState === "error" ? "bg-rose-500/20 text-rose-400 border border-rose-500/20" :
-                                "bg-blue-500/20 text-blue-400 border border-blue-500/20"}
-          `}>
-                        {syncMsg}
+                        fixed bottom-6 left-1/2 -translate-x-1/2 z-100
+                        px-4 py-2 rounded-xl text-xs font-mono font-medium
+                        shadow-2xl backdrop-blur-md border animate-fade-up
+                        ${syncState === "success" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/20" :
+                            syncState === "error" ? "bg-rose-500/20 text-rose-400 border-rose-500/20" :
+                                "bg-blue-500/20 text-blue-400 border-blue-500/20"}
+                      `}>
+                        <div className="flex items-center gap-2">
+                            {syncState === "syncing" && <div className="spinner w-3 h-3" />}
+                            {syncMsg}
+                        </div>
                     </div>
                 )}
             </header>

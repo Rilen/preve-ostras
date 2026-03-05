@@ -21,9 +21,9 @@
   --amber-core: #f59e0b;
   --amber-glow: rgba(245, 158, 11, 0.35);
 
-  --sidebar-w: 320px;
-  --panel-w: 360px;
-  --topbar-h: 64px;
+  --sidebar-w: 280px;
+  --panel-w: 320px;
+  --topbar-h: 56px;
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -38,7 +38,7 @@
   }
 
   html {
-    font-size: 14px;
+    font-size: 13px;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
@@ -91,10 +91,18 @@
 
 /* Shell principal: topbar fixa + área de conteúdo */
 .app-shell {
-  display: grid;
-  grid-template-rows: var(--topbar-h) 1fr;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
   height: 100vh;
   overflow: hidden;
+}
+
+@media (max-width: 1024px) {
+  .app-shell {
+    height: auto;
+    overflow: visible;
+  }
 }
 
 /* Topbar */
@@ -106,11 +114,19 @@
   -webkit-backdrop-filter: blur(20px);
   display: flex;
   align-items: center;
-  padding: 0 24px;
-  gap: 24px;
+  padding: 0 16px;
+  gap: 16px;
   position: sticky;
   top: 0;
   z-index: 50;
+  flex-shrink: 0;
+}
+
+@media (max-width: 640px) {
+  .topbar {
+    padding: 0 12px;
+    gap: 8px;
+  }
 }
 
 /* Área de conteúdo: 3 colunas fixas */
@@ -118,7 +134,22 @@
   display: grid;
   grid-template-columns: var(--sidebar-w) 1fr var(--panel-w);
   overflow: hidden;
-  height: calc(100vh - var(--topbar-h));
+  flex: 1;
+}
+
+@media (max-width: 1200px) {
+  .workspace {
+    grid-template-columns: 1fr 1.5fr 1fr;
+  }
+}
+
+@media (max-width: 1024px) {
+  .workspace {
+    display: flex;
+    flex-direction: column;
+    overflow: visible;
+    height: auto;
+  }
 }
 
 /* Colunas laterais com scroll independente */
@@ -126,10 +157,19 @@
 .sidebar-right {
   overflow-y: auto;
   overflow-x: hidden;
-  padding: 20px 16px;
+  padding: 12px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  gap: 12px;
+}
+
+@media (max-width: 1024px) {
+
+  .sidebar-left,
+  .sidebar-right {
+    height: auto;
+    overflow: visible;
+  }
 }
 
 .sidebar-left {
@@ -146,6 +186,14 @@
   display: flex;
   flex-direction: column;
   background: var(--bg-base);
+  min-height: 400px;
+}
+
+@media (max-width: 1024px) {
+  .map-area {
+    height: 500px;
+    order: -1;
+  }
 }
 
 /* ─── Componentes ──────────────────────────────────────────────────────────── */
@@ -154,7 +202,7 @@
 .card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 16px;
+  border-radius: 12px;
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   transition: border-color 200ms ease, box-shadow 200ms ease;
@@ -183,14 +231,14 @@
 
 /* Métricas grandes */
 .metric-giant {
-  font-size: 2.75rem;
-  font-weight: 900;
+  font-size: 2.25rem;
+  font-weight: 800;
   letter-spacing: -0.03em;
   line-height: 1;
 }
 
 .metric-large {
-  font-size: 2rem;
+  font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1;
@@ -199,11 +247,11 @@
 /* Rótulos táticos */
 .label-tactical {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.22em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
-  color: rgba(148, 163, 184, 0.72);
+  color: rgba(148, 163, 184, 0.6);
 }
 
 .label-tactical-hi {
@@ -241,13 +289,13 @@
 .badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 2px 8px;
-  border-radius: 99px;
+  gap: 4px;
+  padding: 1px 6px;
+  border-radius: 4px;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.58rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 

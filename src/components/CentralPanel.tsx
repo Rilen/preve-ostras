@@ -75,37 +75,34 @@ const CentralPanel: React.FC<Props> = ({ analysis, loading }) => {
 
             {/* ─── Barra de Abas ─────────────────────────────────────────────────── */}
             <div className="shrink-0 flex items-center justify-between px-5 py-0 border-b border-white/5 bg-black/20 backdrop-blur-sm">
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1 overflow-x-auto no-scrollbar scroll-smooth">
                     {TAB_CONFIG.map((t) => (
                         <button
                             key={t.id}
                             onClick={() => setTab(t.id)}
-                            className={`flex items-center gap-2 px-4 py-4 text-xs font-bold tracking-wide border-b-2 transition-all duration-200 ${tab === t.id
-                                    ? "border-blue-400 text-blue-400"
-                                    : "border-transparent text-slate-500 hover:text-slate-300 hover:border-white/20"
+                            className={`flex items-center gap-1.5 px-3 py-3 text-[10px] font-bold tracking-wide border-b-2 transition-all duration-200 whitespace-nowrap shrink-0 ${tab === t.id
+                                ? "border-blue-400 text-blue-400 bg-blue-400/5"
+                                : "border-transparent text-slate-500 hover:text-slate-300"
                                 }`}
                         >
-                            <span>{t.icon}</span>
-                            {t.label}
+                            <span className="text-sm shrink-0">{t.icon}</span>
+                            <span className="uppercase tracking-tighter whitespace-nowrap">{t.label}</span>
                         </button>
                     ))}
                 </div>
 
                 {/* Info rápida contextual na barra de abas */}
-                <div className="flex items-center gap-4 pr-2">
+                <div className="hidden sm:flex items-center gap-3 pr-2 ml-4 shrink-0">
                     {tab === "historico" && anomaly && (
                         <span className={`badge ${anomaly.tendencia === "critico" ? "badge-rose" :
-                                anomaly.tendencia === "acima" ? "badge-amber" : "badge-blue"
-                            }`}>
-                            Anomalia {anomaly.anomaliaPct > 0 ? "+" : ""}{anomaly.anomaliaPct.toFixed(0)}%
+                            anomaly.tendencia === "acima" ? "badge-amber" : "badge-blue"
+                            } text-[9px]`}>
+                            {anomaly.anomaliaPct > 0 ? "+" : ""}{anomaly.anomaliaPct.toFixed(0)}%
                         </span>
                     )}
-                    {tab === "desastres" && (
-                        <span className="label-tactical">{disasters.length} eventos registrados</span>
-                    )}
                     {tab === "mapa" && analysis && (
-                        <div className="flex items-center gap-2">
-                            <span className="label-tactical">Scroll=Zoom · Drag=Pan · 2×=Reset</span>
+                        <div className="hidden md:flex items-center gap-2">
+                            <span className="label-tactical text-[8px] opacity-40">S/Z · D/P · 2×/R</span>
                         </div>
                     )}
                 </div>
@@ -120,12 +117,12 @@ const CentralPanel: React.FC<Props> = ({ analysis, loading }) => {
 
             {/* ABA: Histórico */}
             {tab === "historico" && (
-                <div className="flex-1 overflow-hidden flex flex-col p-6 gap-4">
-                    <div className="flex items-center justify-between shrink-0">
+                <div className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col p-4 sm:p-6 gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between shrink-0 gap-4">
                         <div>
                             <div className="label-tactical">Precipitação Anual · Rio das Ostras</div>
-                            <div className="text-base font-bold text-slate-200 mt-0.5">
-                                2015 – 2024 · Open-Meteo ERA5
+                            <div className="text-sm font-bold text-slate-200 mt-0.5">
+                                Histórico 2015 – 2024
                             </div>
                         </div>
                         {annuals.length > 0 && (() => {
@@ -133,15 +130,15 @@ const CentralPanel: React.FC<Props> = ({ analysis, loading }) => {
                             const maisUmido = annuals.reduce((m, a) => a.precipitacaoTotal > m.precipitacaoTotal ? a : m);
                             const maisSeco = annuals.reduce((m, a) => a.precipitacaoTotal < m.precipitacaoTotal ? a : m);
                             return (
-                                <div className="flex gap-3">
+                                <div className="flex flex-wrap gap-2">
                                     {[
-                                        { label: "Média dec.", value: `${media.toFixed(0)} mm`, color: "#94a3b8" },
-                                        { label: `Mais úmido (${maisUmido.ano})`, value: `${maisUmido.precipitacaoTotal.toFixed(0)} mm`, color: "#f43f5e" },
-                                        { label: `Mais seco (${maisSeco.ano})`, value: `${maisSeco.precipitacaoTotal.toFixed(0)} mm`, color: "#f59e0b" },
+                                        { label: "Média", value: `${media.toFixed(0)} mm`, color: "#94a3b8" },
+                                        { label: `+ Úmido (${maisUmido.ano})`, value: `${maisUmido.precipitacaoTotal.toFixed(0)} mm`, color: "#f43f5e" },
+                                        { label: `- Seco (${maisSeco.ano})`, value: `${maisSeco.precipitacaoTotal.toFixed(0)} mm`, color: "#f59e0b" },
                                     ].map(({ label, value, color }) => (
-                                        <div key={label} className="card px-3 py-2 text-right">
-                                            <div className="label-tactical">{label}</div>
-                                            <div className="text-sm font-black font-mono mt-0.5" style={{ color }}>{value}</div>
+                                        <div key={label} className="card px-2 py-1.5 text-right flex-1 min-w-[80px]">
+                                            <div className="label-tactical text-[8px]">{label}</div>
+                                            <div className="text-xs font-black font-mono mt-0.5" style={{ color }}>{value}</div>
                                         </div>
                                     ))}
                                 </div>
@@ -173,15 +170,15 @@ const CentralPanel: React.FC<Props> = ({ analysis, loading }) => {
 
             {/* ABA: Desastres */}
             {tab === "desastres" && (
-                <div className="flex-1 overflow-hidden grid grid-cols-[1fr_300px] gap-0">
+                <div className="flex-1 overflow-hidden grid grid-cols-1 lg:grid-cols-[1fr_280px] gap-0">
 
                     {/* Timeline */}
-                    <div className="overflow-y-auto p-6">
+                    <div className="overflow-y-auto p-4 sm:p-6">
                         <div className="flex items-center justify-between mb-4 shrink-0">
                             <div>
-                                <div className="label-tactical">Linha do Tempo · Eventos Registrados</div>
-                                <div className="text-base font-bold text-slate-200 mt-0.5">
-                                    Rio das Ostras · 2017–2026 · Fontes: S2iD / Defesa Civil
+                                <div className="label-tactical">Linha do Tempo · Eventos</div>
+                                <div className="text-sm font-bold text-slate-200 mt-0.5">
+                                    Rio das Ostras · 2017–2026
                                 </div>
                             </div>
                         </div>
@@ -191,7 +188,7 @@ const CentralPanel: React.FC<Props> = ({ analysis, loading }) => {
                     </div>
 
                     {/* Painel de estatísticas e recomendações */}
-                    <div className="border-l border-white/5 p-5 overflow-y-auto flex flex-col gap-4">
+                    <div className="border-t lg:border-t-0 lg:border-l border-white/5 p-4 sm:p-5 overflow-y-auto flex flex-col gap-4 bg-black/10">
 
                         {/* Stats */}
                         <div>
