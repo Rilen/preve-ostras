@@ -71,9 +71,9 @@ const Dashboard: React.FC = () => {
                         </div>
                         <span className="pulse-dot pulse-dot-blue absolute -top-0.5 -right-0.5 w-2 h-2" />
                     </div>
-                    <div className="min-w-0">
-                        <div className="font-black text-slate-100 text-base tracking-tight leading-none whitespace-nowrap">PREVE-OSTRAS</div>
-                        <div className="label-tactical mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis">Sistema de Inteligência Territorial</div>
+                    <div className="min-w-0 flex-shrink">
+                        <div className="font-black text-slate-100 text-sm md:text-base tracking-tight leading-none whitespace-nowrap">PREVE-OSTRAS</div>
+                        <div className="label-tactical mt-0.5 whitespace-nowrap overflow-hidden text-ellipsis opacity-60">SISTEMA DE INTELIGÊNCIA</div>
                     </div>
                 </div>
 
@@ -124,22 +124,6 @@ const Dashboard: React.FC = () => {
                     </button>
                 </div>
 
-                {/* Feedback de sync */}
-                {syncMsg && syncState !== "idle" && (
-                    <div className={`
-                        fixed bottom-6 left-1/2 -translate-x-1/2 z-100
-                        px-4 py-2 rounded-xl text-xs font-mono font-medium
-                        shadow-2xl backdrop-blur-md border animate-fade-up
-                        ${syncState === "success" ? "bg-emerald-500/20 text-emerald-400 border-emerald-500/20" :
-                            syncState === "error" ? "bg-rose-500/20 text-rose-400 border-rose-500/20" :
-                                "bg-blue-500/20 text-blue-400 border-blue-500/20"}
-                      `}>
-                        <div className="flex items-center gap-2">
-                            {syncState === "syncing" && <div className="spinner w-3 h-3" />}
-                            {syncMsg}
-                        </div>
-                    </div>
-                )}
             </header>
 
             {/* ══ WORKSPACE ═══════════════════════════════════════════════════════ */}
@@ -156,6 +140,24 @@ const Dashboard: React.FC = () => {
                 {/* Coluna Direita */}
                 <SidebarRight analysis={analysis} loading={loadingAnalysis} />
             </div>
+            {/* Feedback de sync (Toast) */}
+            {syncMsg && syncState !== "idle" && (
+                <div className={`
+                    fixed bottom-8 left-1/2 -translate-x-1/2 z-[100]
+                    px-5 py-2.5 rounded-2xl text-[11px] font-mono font-bold
+                    shadow-[0_20px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl border animate-fade-up
+                    ${syncState === "success" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" :
+                        syncState === "error" ? "bg-rose-500/10 text-rose-400 border-rose-500/20" :
+                            "bg-blue-600/20 text-blue-300 border-blue-500/30"}
+                  `}>
+                    <div className="flex items-center gap-3">
+                        {syncState === "syncing" && <div className="spinner w-3.5 h-3.5" />}
+                        {syncState === "success" && <span className="text-emerald-400">✓</span>}
+                        {syncState === "error" && <span className="text-rose-400">✕</span>}
+                        <span className="tracking-wide uppercase italic">{syncMsg}</span>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
